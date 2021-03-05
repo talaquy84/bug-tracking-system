@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler'
 import User from '../models/userModel.js'
+import generateToken from '../utils/generateToken.js'
 
 //@desc     Auth user & get token(login)
 //@route    POST /api/users/login
@@ -16,7 +17,7 @@ const authUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
-      token: ''
+      token: generateToken(user._id)
     })
   } else {
     res.status(401)
@@ -47,7 +48,7 @@ const createUser = asyncHandler(async (req, res) => {
       name: user.name,
       isAdmin: user.isAdmin,
       role: user.role,
-      token: ''
+      token: generateToken(user._id)
     })
   } else {
     res.status(400)
@@ -55,7 +56,30 @@ const createUser = asyncHandler(async (req, res) => {
   }
 })
 
+//@desc     GET user profile
+//@route    GET /api/users/profile
+//@access   Private(using token)
+const getUserProfile = asyncHandler(async (req, res) => {
+  //req.user is fetching from protect middleware (private access)
+  //Fetch data again based on data from protect
+  const user = await User.findById(req.user._id)
+
+  if (user) {
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      isAdmin: user.isAdmin,
+    })
+  } else {
+    res.status(404)
+    throw new Error('User not found')
+  }
+})
+
 export {
   authUser,
-  createUser
+  createUser,
+  getUserProfile
 }

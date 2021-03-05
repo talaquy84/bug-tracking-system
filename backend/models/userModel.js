@@ -38,7 +38,7 @@ const userSchema = mongoose.Schema({
   timestamps: true
 })
 
-//Create method in mongoDB
+//Create method in mongoDB to check password
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password)
 }
