@@ -6,14 +6,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '../actions/userActions'
 import SearchBox from './SearchBox'
 
-const Header = () => {
+const Header = ({ history }) => {
   const dispatch = useDispatch()
 
-  const userLogin = useSelector(state => state.userLogin)
-  const { userInfo } = userLogin
+  const auth = useSelector(state => state.auth)
+  const { user } = auth
 
   const logoutHandler = () => {
     dispatch(logout())
+    history.push('/')
   }
 
   return (
@@ -24,9 +25,10 @@ const Header = () => {
         </LinkContainer>
         <Navbar.Toggle aria-controls='basic-navbar-nav' />
         <Navbar.Collapse id='basic-navbar-nav' >
-          {/* <Route render={({ history }) => <SearchBox history={history} />} /> */}
+          <Route render={({ history }) => <SearchBox history={history} />} />
           <Nav className='ml-auto'>
-            <NavDropdown title={userInfo.name} id='username' >
+            <Nav.Link eventKey="disabled" disabled>Welcome, </Nav.Link>
+            <NavDropdown title='User name' id='username' >
               <LinkContainer to='/profile'>
                 <NavDropdown.Item>Profile</NavDropdown.Item>
               </LinkContainer>

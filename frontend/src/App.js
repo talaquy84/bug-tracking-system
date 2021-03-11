@@ -1,16 +1,29 @@
-import React, { useState } from 'react'
-
+import React, { useState, useEffect } from 'react'
 import LoginScreen from './screens/LoginScreen'
+import RegisterScreen from './screens/RegisterScreen'
 import HomeScreen from './screens/HomeScreen'
-import { Container, Row, Col } from 'react-bootstrap'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import PrivateRoute from './routing/PrivateRoute'
+import { loadUser } from './actions/userActions'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import setAuthToken from './utils/setAuthToken'
+import store from './store'
+
+if (localStorage.token) {
+  setAuthToken(localStorage.token)
+}
 
 function App() {
+  useEffect(() => {
+    store.dispatch(loadUser())
+  }, [])
+
   return (
     <Router>
-      <Route path='/' component={LoginScreen} exact />
-      <Route path='/home' component={HomeScreen} exact />
-
+      <Switch>
+        <Route exact path='/' component={LoginScreen} />
+        <Route exact path='/register' component={RegisterScreen} />
+        <PrivateRoute exact path='/home' component={HomeScreen} />
+      </Switch>
     </Router>
   )
 }
