@@ -9,6 +9,10 @@ import {
   USER_LOGOUT,
   USER_LOADED,
   AUTH_ERROR,
+  USER_DETAIL_REQUEST,
+  USER_DETAIL_SUCCESS,
+  USER_DETAIL_FAIL,
+  USER_DETAIL_RESET,
 } from '../constants/userConstants'
 import setAuthToken from '../utils/setAuthToken'
 
@@ -58,7 +62,8 @@ export const login = (email, password) => async (dispatch) => {
       payload: data
     })
     dispatch({
-      type: USER_LOADED
+      type: USER_LOADED,
+      payload: data
     })
     localStorage.setItem('userInfo', JSON.stringify(data))
   } catch (error) {
@@ -107,6 +112,39 @@ export const register = (name, email, password, role) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: USER_REGISTER_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+    })
+  }
+}
+
+export const getUserDetails = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_DETAIL_REQUEST
+    })
+    //Destructuring from store -> userLogin -> userInfo
+    const {
+      userLogin: { user }
+    } = getState()
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${ user.token }`
+      }
+    }
+    const { data } = await axios.get(`/api/users/${ id }`, config)
+
+    dispatch({
+      type: USER_DETAIL_SUCCESS,
+      payload: data
+    })
+  } catch (error) {
+    dispatch({
+      type: USER_DETAIL_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

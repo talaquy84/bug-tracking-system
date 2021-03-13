@@ -7,7 +7,11 @@ import {
   USER_LOGIN_FAIL,
   USER_LOGOUT,
   USER_LOADED,
-  AUTH_ERROR
+  AUTH_ERROR,
+  USER_DETAIL_REQUEST,
+  USER_DETAIL_SUCCESS,
+  USER_DETAIL_FAIL,
+  USER_DETAIL_RESET,
 } from '../constants/userConstants'
 
 const initialState = {
@@ -17,10 +21,9 @@ const initialState = {
   user: null
 }
 
+//Loader
 export const auth = (state = initialState, action) => {
   switch (action.type) {
-    case USER_LOGIN_REQUEST:
-      return { loading: true }
     case USER_LOADED:
       return {
         ...state,
@@ -28,6 +31,25 @@ export const auth = (state = initialState, action) => {
         loading: false,
         user: action.payload
       }
+    case AUTH_ERROR:
+      localStorage.removeItem('token')
+      return {
+        ...state,
+        loading: false,
+        token: null,
+        isAuthenticated: false,
+        error: action.payload
+      }
+    default:
+      return state
+  }
+}
+
+//Login
+export const userLogin = (state = {}, action) => {
+  switch (action.type) {
+    case USER_LOGIN_REQUEST:
+      return { loading: true }
     case USER_LOGIN_SUCCESS:
       localStorage.setItem('token', action.payload.token)
       return {
@@ -37,7 +59,6 @@ export const auth = (state = initialState, action) => {
         isAuthenticated: true,
       }
     case USER_LOGIN_FAIL:
-    case AUTH_ERROR:
       localStorage.removeItem('token')
       return {
         ...state,
@@ -57,6 +78,7 @@ export const auth = (state = initialState, action) => {
   }
 }
 
+//Register
 export const userRegister = (state = {}, action) => {
   switch (action.type) {
     case USER_REGISTER_REQUEST:
@@ -78,6 +100,22 @@ export const userRegister = (state = {}, action) => {
         isAuthenticated: false,
         error: action.payload
       }
+    default:
+      return state
+  }
+}
+
+//Without initial state, still working
+export const userDetails = (state = { user: {} }, action) => {
+  switch (action.type) {
+    case USER_DETAIL_REQUEST:
+      return { ...state, loading: true }
+    case USER_DETAIL_SUCCESS:
+      return { loading: false, user: action.payload }
+    case USER_DETAIL_FAIL:
+      return { loading: false, error: action.payload }
+    case USER_DETAIL_RESET:
+      return { user: {} }
     default:
       return state
   }
