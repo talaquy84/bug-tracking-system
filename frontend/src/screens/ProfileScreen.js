@@ -4,7 +4,6 @@ import { LinkContainer } from 'react-router-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import { getUserDetails } from '../actions/userActions'
 // import { USER_UPDATE_PROFILE_RESET } from '../constants/userConstants'
 
 const ProfileScreen = ({ location, history }) => {
@@ -17,49 +16,41 @@ const ProfileScreen = ({ location, history }) => {
 
   const dispatch = useDispatch()
 
-  const userDetails = useSelector(state => state.userDetails)
-  const { loading, user, error } = userDetails
-
-  //To check if login or not
   const auth = useSelector(state => state.auth)
-  const { user: userInfo } = auth
+  const { loading, user, error } = auth
 
   // const userUpdateProfile = useSelector(state => state.userUpdateProfile)
   // const { success } = userUpdateProfile
 
   useEffect(() => {
-    //If not login, go to login page
-    if (!userInfo) {
-      history.push('/')
+    //If user detail is not here, then get user detail
+    if (!user) {
+      // dispatch({ type: USER_UPDATE_PROFILE_RESET })
     } else {
-      //If user detail is not here, then get user detail
-      if (!user) {
-        // dispatch({ type: USER_UPDATE_PROFILE_RESET })
-        dispatch(getUserDetails('profile'))
-      } else {
-        setName(user.name)
-        setEmail(user.email)
-      }
+      setName(user.name)
+      setEmail(user.email)
+      setRole((user.role))
     }
-  }, [dispatch, history, userInfo, user])
+
+  }, [dispatch, history, user])
 
   const submitHandler = (e) => {
     e.preventDefault()
     if (password !== confirmedPassword) {
       setMessage('Password do not match')
     } else {
-      // dispatch(updateUserProfile({ id: user._id, name, email, password }))
+      // dispatch(updateUserProfile({ id: user._id, name, email, password, roles }))
       //Update
     }
   }
 
   return (
     <main>
-      <Row>
-        <Col md={3}>
+      <Row className='px-5 py-4'>
+        <Col md={3} >
           <h2>User Profile</h2>
           {message && <Message variant='danger'>{message}</Message>}
-          {error && <Message variant='danger'>{error}</Message>}
+          {/* {error && <Message variant='danger'>{error}</Message>} */}
           {/* {success && <Message variant='success'>Update Successful</Message>} */}
           {loading && <Loader />}
           <Form>
@@ -120,7 +111,7 @@ const ProfileScreen = ({ location, history }) => {
           </Form>
         </Col>
         <Col md={9}>
-          <h2>My order</h2>
+          <h2>My Tickets</h2>
 
         </Col>
       </Row>

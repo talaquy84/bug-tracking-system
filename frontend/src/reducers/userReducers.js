@@ -29,7 +29,7 @@ export const auth = (state = initialState, action) => {
         ...state,
         isAuthenticated: true,
         loading: false,
-        user: action.payload
+        user: action.payload,
       }
     case AUTH_ERROR:
       localStorage.removeItem('token')
@@ -100,22 +100,6 @@ export const userRegister = (state = {}, action) => {
         isAuthenticated: false,
         error: action.payload
       }
-    default:
-      return state
-  }
-}
-
-//Without initial state, still working
-export const userDetails = (state = { user: {} }, action) => {
-  switch (action.type) {
-    case USER_DETAIL_REQUEST:
-      return { ...state, loading: true }
-    case USER_DETAIL_SUCCESS:
-      return { loading: false, user: action.payload }
-    case USER_DETAIL_FAIL:
-      return { loading: false, error: action.payload }
-    case USER_DETAIL_RESET:
-      return { user: {} }
     default:
       return state
   }

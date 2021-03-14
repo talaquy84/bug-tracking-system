@@ -23,11 +23,11 @@ export const loadUser = () => async (dispatch) => {
       setAuthToken(localStorage.token)
     }
     const { data } = await axios.get('/api/users')
+
     dispatch({
       type: USER_LOADED,
       payload: data
     })
-
   } catch (error) {
     dispatch({
       type: AUTH_ERROR,
@@ -61,6 +61,7 @@ export const login = (email, password) => async (dispatch) => {
       type: USER_LOGIN_SUCCESS,
       payload: data
     })
+
     dispatch({
       type: USER_LOADED,
       payload: data
@@ -112,39 +113,6 @@ export const register = (name, email, password, role) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: USER_REGISTER_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
-    })
-  }
-}
-
-export const getUserDetails = (id) => async (dispatch, getState) => {
-  try {
-    dispatch({
-      type: USER_DETAIL_REQUEST
-    })
-    //Destructuring from store -> userLogin -> userInfo
-    const {
-      userLogin: { user }
-    } = getState()
-
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${ user.token }`
-      }
-    }
-    const { data } = await axios.get(`/api/users/${ id }`, config)
-
-    dispatch({
-      type: USER_DETAIL_SUCCESS,
-      payload: data
-    })
-  } catch (error) {
-    dispatch({
-      type: USER_DETAIL_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

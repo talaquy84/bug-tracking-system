@@ -79,21 +79,32 @@ const createUser = asyncHandler(async (req, res) => {
   }
 })
 
-//@desc     GET user profile
-//@route    GET /api/users/profile
+//@desc     Update user profile
+//@route    PUT /api/users/profile
 //@access   Private
-const getUserProfile = asyncHandler(async (req, res) => {
-  //req.user is fetching from protect middleware (private access)
-  //Fetch data again based on data from protect
+const updateUserProfile = asyncHandler(async (req, res) => {
+  //req.user1 is fetching from protect middleware (private access)
+  //Fetch data again based on data from protect 
   const user = await User.findById(req.user._id)
 
   if (user) {
+    //if req.body.name exists, or user.name stay the same
+    user.name = req.body.name || user.name
+    user.email = req.body.email || user.email
+    if (req.body.password) {
+      user.password = req.body.password
+    }
+    user.role = req.body.role || user.role
+
+    const updatedUser = await user.save()
+
     res.json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      isAdmin: user.isAdmin,
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+      role: updatedUser.role,
+      token: generateToken(user._id)
     })
   } else {
     res.status(404)
@@ -105,5 +116,5 @@ export {
   getAuth,
   authUser,
   createUser,
-  getUserProfile
+  updateUserProfile
 }

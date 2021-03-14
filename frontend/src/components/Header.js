@@ -29,7 +29,7 @@ const Header = ({ history }) => {
           <Nav className='ml-auto'>
             <Nav.Link eventKey="disabled" disabled>Welcome, </Nav.Link>
             <NavDropdown title='User name' id='username' >
-              <LinkContainer to='/profile'>
+              <LinkContainer to={`/profile`} >
                 <NavDropdown.Item>Profile</NavDropdown.Item>
               </LinkContainer>
               <NavDropdown.Item href='/setting'>Setting</NavDropdown.Item>
@@ -44,7 +44,7 @@ const Header = ({ history }) => {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
-    </header>
+    </header >
   )
 }
 
