@@ -6,7 +6,7 @@ const HomeScreen = () => {
   return (
     <>
       <main>
-        <Container className='py-3 ml-1'>
+        <Container className='py-3 ml-auto'>
           <Row>
             <Col>
               <BarChart />

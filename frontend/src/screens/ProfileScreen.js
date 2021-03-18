@@ -4,9 +4,11 @@ import { LinkContainer } from 'react-router-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-// import { USER_UPDATE_PROFILE_RESET } from '../constants/userConstants'
+import { updateUserProfile, loadUser } from '../actions/userActions'
+import { listMyTickets } from '../actions/ticketActions'
+import { USER_UPDATE_RESET } from '../constants/userConstants'
 
-const ProfileScreen = ({ location, history }) => {
+const ProfileScreen = ({ history }) => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -17,30 +19,33 @@ const ProfileScreen = ({ location, history }) => {
   const dispatch = useDispatch()
 
   const auth = useSelector(state => state.auth)
-  const { loading, user, error } = auth
+  const { loading, user } = auth
 
-  // const userUpdateProfile = useSelector(state => state.userUpdateProfile)
-  // const { success } = userUpdateProfile
+  const userUpdateProfile = useSelector(state => state.userUpdateProfile)
+  const { success } = userUpdateProfile
+
+  const getMyTickets = useSelector(state => state.getMyTickets)
+  const { loading: loadingTicket, tickets, error } = getMyTickets
 
   useEffect(() => {
-    //If user detail is not here, then get user detail
-    if (!user) {
-      // dispatch({ type: USER_UPDATE_PROFILE_RESET })
+    if (!user || !user.name || success) {
+      dispatch(loadUser())
     } else {
       setName(user.name)
       setEmail(user.email)
       setRole((user.role))
+      dispatch(listMyTickets())
     }
-
-  }, [dispatch, history, user])
+  }, [dispatch, history, user, success])
 
   const submitHandler = (e) => {
     e.preventDefault()
     if (password !== confirmedPassword) {
       setMessage('Password do not match')
     } else {
-      // dispatch(updateUserProfile({ id: user._id, name, email, password, roles }))
-      //Update
+      dispatch(updateUserProfile({ id: user._id, name, email, password, role }))
+      setPassword('')
+      setConfirmedPassword('')
     }
   }
 
@@ -50,8 +55,7 @@ const ProfileScreen = ({ location, history }) => {
         <Col md={3} >
           <h2>User Profile</h2>
           {message && <Message variant='danger'>{message}</Message>}
-          {/* {error && <Message variant='danger'>{error}</Message>} */}
-          {/* {success && <Message variant='success'>Update Successful</Message>} */}
+          {success && <Message variant='success'>Update Successful</Message>}
           {loading && <Loader />}
           <Form>
             <Form.Group controlId="name">
@@ -111,9 +115,45 @@ const ProfileScreen = ({ location, history }) => {
           </Form>
         </Col>
         <Col md={9}>
-          <h2>My Tickets</h2>
-
-        </Col>
+          <h2>My Ticket(s)</h2>
+          {loadingTicket ? <Loader /> : error ? <Message variant='danger'>
+            {error} </Message> : (
+            <Table striped bordered hover responsive className='table-sm'>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>NAME</th>
+                  <th>DESCRIPTION</th>
+                  <th>PRIORITY</th>
+                  <th>STATUS</th>
+                  <th>PROJECT</th>
+                  <th>ASSIGNED BY</th>
+                  <th>DATE</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {tickets.map(ticket => (
+                  <tr key={ticket._id}>
+                    <td>{ticket._id}</td>
+                    <td>{ticket.name}</td>
+                    <td>{ticket.description}</td>
+                    <td>{ticket.priority}</td>
+                    <td>{ticket.status}</td>
+                    <td>{ticket.status}</td>
+                    <td>{ticket.createdAt.substring(0, 10)}</td>
+                    <td>{ticket.updatedAt.substring(0, 10)}</td>
+                    <td>
+                      <LinkContainer to={`/order`}>
+                        <Button className='btn-sm' variant='light'>Details</Button>
+                      </LinkContainer>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          )}
+        </ Col>
       </Row>
     </main>
   )

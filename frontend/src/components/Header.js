@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Navbar, Nav, Container, NavDropdown, Button } from 'react-bootstrap'
 import { Route } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
@@ -26,9 +26,9 @@ const Header = ({ history }) => {
         <Navbar.Toggle aria-controls='basic-navbar-nav' />
         <Navbar.Collapse id='basic-navbar-nav' >
           <Route render={({ history }) => <SearchBox history={history} />} />
-          <Nav className='ml-auto'>
+          <Nav className='ml-auto mr-5'>
             <Nav.Link eventKey="disabled" disabled>Welcome, </Nav.Link>
-            <NavDropdown title='User name' id='username' >
+            <NavDropdown title={user ? user.name : ""} id='username' >
               <LinkContainer to={`/profile`} >
                 <NavDropdown.Item>Profile</NavDropdown.Item>
               </LinkContainer>

@@ -9,10 +9,9 @@ import {
   USER_LOGOUT,
   USER_LOADED,
   AUTH_ERROR,
-  USER_DETAIL_REQUEST,
-  USER_DETAIL_SUCCESS,
-  USER_DETAIL_FAIL,
-  USER_DETAIL_RESET,
+  USER_UPDATE_REQUEST,
+  USER_UPDATE_SUCCESS,
+  USER_UPDATE_FAIL,
 } from '../constants/userConstants'
 import setAuthToken from '../utils/setAuthToken'
 
@@ -113,6 +112,47 @@ export const register = (name, email, password, role) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: USER_REGISTER_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+    })
+  }
+}
+
+//update user
+export const updateUserProfile = (user) => async (dispatch) => {
+  try {
+    dispatch({
+      type: USER_UPDATE_REQUEST
+    })
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    if (localStorage.token) {
+      setAuthToken(localStorage.token)
+    }
+    const { data } = await axios.put(
+      '/api/users/profile',
+      user,
+      config
+    )
+
+    dispatch({
+      type: USER_UPDATE_SUCCESS,
+      payload: data
+    })
+    dispatch({
+      type: USER_LOADED,
+      payload: data
+    })
+    localStorage.setItem('userInfo', JSON.stringify(data))
+  } catch (error) {
+    dispatch({
+      type: USER_UPDATE_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

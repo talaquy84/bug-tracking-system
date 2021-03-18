@@ -90,7 +90,7 @@ const RegisterScreen = ({ location, history }) => {
           <Form.Label>Role</Form.Label>
           <Form.Control
             as="select"
-            value="Developer"
+            value={role}
             onChange={(e) => setRole(e.target.value)}
           >
             <option>Developer</option>

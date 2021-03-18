@@ -40,6 +40,7 @@ const authUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
+      role: user.role,
       token: generateToken(user._id)
     })
   } else {
@@ -67,6 +68,7 @@ const createUser = asyncHandler(async (req, res) => {
 
   if (user) {
     res.status(201).json({
+      _id: user._id,
       email: user.email,
       name: user.name,
       isAdmin: user.isAdmin,
