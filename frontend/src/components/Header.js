@@ -20,12 +20,12 @@ const Header = ({ history }) => {
   return (
     <header>
       <Navbar className='border border-secondary border-5' style={{ background: 'WhiteSmoke' }} expand='lg' collapseOnSelect>
-        <LinkContainer to='/home'>
-          <Navbar.Brand href='/home'>Bug Tracking</Navbar.Brand>
-        </LinkContainer>
         <Navbar.Toggle aria-controls='basic-navbar-nav' />
         <Navbar.Collapse id='basic-navbar-nav' >
+          {/* Search Box */}
           <Route render={({ history }) => <SearchBox history={history} />} />
+
+          {/* User Welcome */}
           <Nav className='ml-auto mr-5'>
             <Nav.Link eventKey="disabled" disabled>Welcome, </Nav.Link>
             <NavDropdown title={user ? user.name : ""} id='username' >

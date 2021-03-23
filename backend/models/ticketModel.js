@@ -29,13 +29,14 @@ const ticketSchema = mongoose.Schema({
       ref: 'User'
     }
   }],
-  project: [{
+  project: {
+    name: { type: String, required: true },
     projectId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: 'Project'
     }
-  }]
+  }
 }, {
   timestamps: true
 })

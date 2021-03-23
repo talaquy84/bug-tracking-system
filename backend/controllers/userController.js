@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler'
 import User from '../models/userModel.js'
+import Ticket from '../models/ticketModel.js'
 import generateToken from '../utils/generateToken.js'
 
 //@desc     Check route
@@ -85,9 +86,22 @@ const createUser = asyncHandler(async (req, res) => {
 //@route    PUT /api/users/profile
 //@access   Private
 const updateUserProfile = asyncHandler(async (req, res) => {
-  //req.user1 is fetching from protect middleware (private access)
-  //Fetch data again based on data from protect 
   const user = await User.findById(req.user._id)
+  //Update user in ticket
+  const tickets = await Ticket.updateMany(
+    {},
+    {
+      $set: {
+        "assignedTo.$[user].name": req.body.name,
+        "assignedTo.$[user].email": req.body.email,
+        "assignedTo.$[user].role": req.body.role,
+      }
+    },
+    {
+      arrayFilters: [{ "user.userId": req.user._id }],
+      new: true
+    }
+  )
 
   if (user) {
     //if req.body.name exists, or user.name stay the same
@@ -106,7 +120,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       email: updatedUser.email,
       isAdmin: updatedUser.isAdmin,
       role: updatedUser.role,
-      token: generateToken(user._id)
+      token: generateToken(user._id), tickets
     })
   } else {
     res.status(404)

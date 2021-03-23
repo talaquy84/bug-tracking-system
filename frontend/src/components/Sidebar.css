@@ -1,0 +1,32 @@
+* {
+  text-decoration: none;
+  list-style-type: none;
+}
+
+.sidebar-header {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+  padding: 0rem 1rem;
+  color: #fff;
+}
+
+.sidebar-menu {
+  padding: 1rem;
+}
+
+.sidebar-menu li {
+  margin-top: 3rem;
+  margin-bottom: 1.2rem; 
+}
+
+.menu-link {
+  color: #fff;
+  font-size: 1.1rem;
+}
+
+.sidebar Link span:last-child {
+  padding-left: .6rem
+}

@@ -6,11 +6,13 @@ import LoginScreen from './screens/LoginScreen'
 import RegisterScreen from './screens/RegisterScreen'
 import HomeScreen from './screens/HomeScreen'
 import ProfileScreen from './screens/ProfileScreen'
+import ProjectScreen from './screens/ProjectScreen'
+import TicketScreen from './screens/TicketScreen'
 import CreateTicketScreen from './screens/CreateTicketScreen'
 import PrivateRoute from './routing/PrivateRoute'
 import { loadUser } from './actions/userActions'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import { Container, Row, Col, Card } from 'react-bootstrap'
+import { Row, Col } from 'react-bootstrap'
 import setAuthToken from './utils/setAuthToken'
 import store from './store'
 
@@ -39,7 +41,9 @@ function App() {
               <Header />
               <PrivateRoute exact path='/home' component={HomeScreen} />
               <PrivateRoute exact path='/profile' component={ProfileScreen} />
-              <PrivateRoute exact path='/ticket' component={CreateTicketScreen} />
+              <PrivateRoute exact path='/projects' component={ProjectScreen} />
+              <PrivateRoute exact path='/tickets' component={TicketScreen} />
+              <PrivateRoute exact path='/ticke/create' component={CreateTicketScreen} />
               <Footer />
             </Col>
           </Row>

@@ -7,6 +7,7 @@ import Loader from '../components/Loader'
 import { updateUserProfile, loadUser } from '../actions/userActions'
 import { listMyTickets } from '../actions/ticketActions'
 import { USER_UPDATE_RESET } from '../constants/userConstants'
+import { hidden } from 'colors'
 
 const ProfileScreen = ({ history }) => {
   const [name, setName] = useState('')
@@ -127,7 +128,6 @@ const ProfileScreen = ({ history }) => {
                   <th>PRIORITY</th>
                   <th>STATUS</th>
                   <th>PROJECT</th>
-                  <th>ASSIGNED BY</th>
                   <th>DATE</th>
                   <th></th>
                 </tr>
@@ -140,9 +140,8 @@ const ProfileScreen = ({ history }) => {
                     <td>{ticket.description}</td>
                     <td>{ticket.priority}</td>
                     <td>{ticket.status}</td>
-                    <td>{ticket.status}</td>
+                    <td> {ticket.project.name}</td>
                     <td>{ticket.createdAt.substring(0, 10)}</td>
-                    <td>{ticket.updatedAt.substring(0, 10)}</td>
                     <td>
                       <LinkContainer to={`/order`}>
                         <Button className='btn-sm' variant='light'>Details</Button>
