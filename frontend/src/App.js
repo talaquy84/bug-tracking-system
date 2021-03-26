@@ -7,6 +7,7 @@ import RegisterScreen from './screens/RegisterScreen'
 import HomeScreen from './screens/HomeScreen'
 import ProfileScreen from './screens/ProfileScreen'
 import ProjectScreen from './screens/ProjectScreen'
+import CreateProjectScreen from './screens/CreateProjectScreen'
 import TicketScreen from './screens/TicketScreen'
 import CreateTicketScreen from './screens/CreateTicketScreen'
 import PrivateRoute from './routing/PrivateRoute'
@@ -42,6 +43,7 @@ function App() {
               <PrivateRoute exact path='/home' component={HomeScreen} />
               <PrivateRoute exact path='/profile' component={ProfileScreen} />
               <PrivateRoute exact path='/projects' component={ProjectScreen} />
+              <PrivateRoute exact path='/projects/new' component={CreateProjectScreen} />
               <PrivateRoute exact path='/tickets' component={TicketScreen} />
               <PrivateRoute exact path='/ticke/create' component={CreateTicketScreen} />
               <Footer />

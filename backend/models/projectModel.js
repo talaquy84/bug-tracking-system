@@ -10,6 +10,7 @@ const projectSchema = mongoose.Schema({
     required: true,
   },
   ticket: [{
+    _id: false,
     ticketName: { type: String, required: true },
     priority: { type: String, required: true },
     status: { type: String, required: true },

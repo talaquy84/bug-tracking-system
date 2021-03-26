@@ -31,7 +31,38 @@ const getProjectById = asyncHandler(async (req, res) => {
   }
 })
 
+//@desc     POST Create a new project
+//@route    POST /api/projects
+//@access   Private
+const createProject = asyncHandler(async (req, res) => {
+  const { name, description } = req.body
+
+  const projectExists = await Project.findOne({ name: name })
+
+  if (projectExists) {
+    res.status(400)
+    throw new Error('Project already exists')
+  }
+
+  const project = await Project.create({
+    name, description
+  })
+
+  if (project) {
+    res.status(201).json({
+      _id: project._id,
+      name: project.name,
+      description: project.description,
+    })
+  } else {
+    res.status(400)
+    throw new Error('Invalid project data')
+  }
+})
+
+
 export {
   getAllProjects,
-  getProjectById
+  getProjectById,
+  createProject
 }

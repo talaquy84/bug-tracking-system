@@ -22,7 +22,9 @@ const ProjectScreen = () => {
         <Row>
           <Col>
             <h2>Projects</h2>
-            <Button className='ml-auto mr-5' >Create New Projects</Button>
+            <LinkContainer to={`/projects/new`}>
+              <Button className='ml-auto mr-5' >Create New Projects</Button>
+            </LinkContainer>
             {loading ? <Loader /> : error ? <Message variant='danger'>
               {error} </Message> : (
               <Table striped bordered hover responsive className='table-sm'>
@@ -52,9 +54,13 @@ const ProjectScreen = () => {
                         </ul>
                       </td>
                       <td>{project.createdAt.substring(0, 10)}</td>
-                      <td><LinkContainer to={`/projects/${ project._id }`}>
-                        <Button className='btn-sm' variant='light'>Details</Button>
-                      </LinkContainer></td>
+                      <td>
+                        <LinkContainer to={`/projects/${ project._id }`}>
+                          <Button className='btn-sm' variant='light'>
+                            Details
+                          </Button>
+                        </LinkContainer>
+                      </td>
                     </tr>
                   )
                   )}

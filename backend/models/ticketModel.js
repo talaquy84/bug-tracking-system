@@ -20,6 +20,7 @@ const ticketSchema = mongoose.Schema({
   },
   //Assigned status is pending if assignedto is empty
   assignedTo: [{
+    _id: false,
     name: { type: String, required: true },
     email: { type: String, required: true },
     role: { type: String, required: true },

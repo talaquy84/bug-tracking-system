@@ -33,6 +33,7 @@ const TicketScreen = () => {
                     <th>DESCRIPTION</th>
                     <th>PRIORITY</th>
                     <th>STATUS</th>
+                    <th>ASSINGED</th>
                     <th>PROJECT</th>
                     <th>DATE</th>
                     <th></th>
@@ -46,6 +47,18 @@ const TicketScreen = () => {
                       <td>{ticket.description}</td>
                       <td>{ticket.priority}</td>
                       <td>{ticket.status}</td>
+                      <td>
+                        {ticket.assignedTo ? (
+                          <ul style={{ paddingLeft: '0' }}>
+                            <div >
+                              {ticket.assignedTo.map(user => (
+                                <li>{user.name}</li>
+                              ))}
+                            </div>
+                          </ul>
+                        ) : ('Pending')}
+
+                      </td>
                       <td>{ticket.project.name}</td>
                       <td>{ticket.createdAt.substring(0, 10)}</td>
                       <td>
