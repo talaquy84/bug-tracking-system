@@ -2,7 +2,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { auth, userRegister, userLogin, userUpdateProfile } from './reducers/userReducers'
-import { getAllProject } from './reducers/projectReducers'
+import { getAllProject, createNewProject } from './reducers/projectReducers'
 import { getAllTicket, getMyTickets } from './reducers/ticketReducers'
 
 const reducer = combineReducers({
@@ -12,7 +12,8 @@ const reducer = combineReducers({
   userUpdateProfile,
   getAllTicket,
   getMyTickets,
-  getAllProject
+  getAllProject,
+  createNewProject
 })
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
