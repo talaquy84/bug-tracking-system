@@ -12,6 +12,9 @@ import {
   USER_UPDATE_SUCCESS,
   USER_UPDATE_FAIL,
   USER_UPDATE_RESET,
+  USER_DETAILS_REQUEST,
+  USER_DETAILS_SUCCESS,
+  USER_DETAILS_FAIL,
 } from '../constants/userConstants'
 
 const initialState = {
@@ -99,6 +102,25 @@ export const userRegister = (state = {}, action) => {
         token: null,
         isAuthenticated: false,
         error: action.payload
+      }
+    default:
+      return state
+  }
+}
+
+export const getAllUser = (state = { users: [] }, action) => {
+  switch (action.type) {
+    case USER_DETAILS_REQUEST:
+      return { loading: true }
+    case USER_DETAILS_SUCCESS:
+      return {
+        loading: false,
+        users: action.payload,
+      }
+    case USER_DETAILS_FAIL:
+      return {
+        loading: false,
+        users: action.payload,
       }
     default:
       return state

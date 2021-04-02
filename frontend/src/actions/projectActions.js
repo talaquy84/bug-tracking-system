@@ -15,7 +15,9 @@ export const listAllProject = () => async (dispatch) => {
     dispatch({
       type: PROJECT_DETAILS_REQUEST
     })
-
+    if (localStorage.token) {
+      setAuthToken(localStorage.token)
+    }
     const { data } = await axios.get('/api/projects')
     dispatch({
       type: PROJECT_DETAILS_SUCCESS,

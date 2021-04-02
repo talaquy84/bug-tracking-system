@@ -1,20 +1,29 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Form, Button, Row, Col } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import { createProject } from '../actions/projectActions'
+import { PROJECT_CREATE_RESET } from '../constants/projectConstants'
 
-const CreateProjectScreen = () => {
+const CreateProjectScreen = ({ history }) => {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
 
   const dispatch = useDispatch()
 
   const newProject = useSelector(state => state.createNewProject)
-  const { loading, success } = newProject
+  const { loading, success, error, project } = newProject
 
-  const submitHandler = (e) => {
+  useEffect(() => {
+    dispatch({ type: PROJECT_CREATE_RESET })
+
+    if (success) {
+      history.push(`${ project._id }/edit`)
+    }
+  }, [dispatch, history, success])
+
+  const createProjectHandler = (e) => {
     e.preventDefault()
     dispatch(createProject(name, description))
   }
@@ -25,6 +34,7 @@ const CreateProjectScreen = () => {
         <Col >
           <h2>Create New Project</h2>
           {success && <Message variant='success'>Project is Created</Message>}
+          {error && <Message variant='danger'>{error}</Message>}
           {loading && <Loader />}
           <Form >
             <Form.Group controlId="name">
@@ -46,7 +56,7 @@ const CreateProjectScreen = () => {
               />
             </Form.Group>
 
-            <Button variant="primary" type="submit" onClick={submitHandler}>
+            <Button variant="primary" type="submit" onClick={createProjectHandler}>
               Create
             </Button>
           </Form>

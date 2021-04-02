@@ -5,6 +5,10 @@ import {
   TICKETS_DETAILS_REQUEST,
   TICKETS_DETAILS_SUCCESS,
   TICKETS_DETAILS_FAIL,
+  TICKET_CREATE_REQUEST,
+  TICKET_CREATE_SUCCESS,
+  TICKET_CREATE_FAIL,
+  TICKET_CREATE_RESET
 } from '../constants/ticketConstants'
 
 export const getAllTicket = (state = { tickets: [] }, action) => {
@@ -40,6 +44,28 @@ export const getMyTickets = (state = { tickets: [] }, action) => {
         loading: false,
         error: action.payload,
       }
+    default:
+      return state
+  }
+}
+
+export const createNewTicket = (state = {}, action) => {
+  switch (action.type) {
+    case TICKET_CREATE_REQUEST:
+      return { loading: true }
+    case TICKET_CREATE_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+        ticket: action.payload,
+      }
+    case TICKET_CREATE_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      }
+    case TICKET_CREATE_RESET:
+      return {}
     default:
       return state
   }

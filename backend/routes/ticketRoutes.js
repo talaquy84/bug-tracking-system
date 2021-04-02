@@ -4,6 +4,6 @@ import { getAllTicket, getMyTickets, createTicket } from '../controllers/ticketC
 import { protect } from '../middleware/authMiddleware.js'
 
 router.route('/mytickets').get(protect, getMyTickets)
-router.route('/').get(getAllTicket).post(protect, createTicket)
+router.route('/').get(protect, getAllTicket).post(protect, createTicket)
 
 export default router

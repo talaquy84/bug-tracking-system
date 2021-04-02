@@ -7,11 +7,15 @@ import RegisterScreen from './screens/RegisterScreen'
 import HomeScreen from './screens/HomeScreen'
 import ProfileScreen from './screens/ProfileScreen'
 import ProjectScreen from './screens/ProjectScreen'
+import ProjectDetailScreen from './screens/ProjectDetailScreen'
 import CreateProjectScreen from './screens/CreateProjectScreen'
 import TicketScreen from './screens/TicketScreen'
 import CreateTicketScreen from './screens/CreateTicketScreen'
 import PrivateRoute from './routing/PrivateRoute'
 import { loadUser } from './actions/userActions'
+import { listAllProject } from './actions/projectActions'
+import { listAllTicket } from './actions/ticketActions'
+import { listAllUser } from './actions/userActions'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { Row, Col } from 'react-bootstrap'
 import setAuthToken from './utils/setAuthToken'
@@ -24,6 +28,9 @@ if (localStorage.token) {
 function App() {
   useEffect(() => {
     store.dispatch(loadUser())
+    store.dispatch(listAllProject())
+    store.dispatch(listAllTicket())
+    store.dispatch(listAllUser())
   }, [])
 
   return (
@@ -40,12 +47,13 @@ function App() {
             {/* Main screen */}
             <Col xs={9} sm={9} md={10} lg={10} className='px-0'>
               <Header />
-              <PrivateRoute exact path='/home' component={HomeScreen} />
+              <PrivateRoute exactpath='/home' component={HomeScreen} />
               <PrivateRoute exact path='/profile' component={ProfileScreen} />
               <PrivateRoute exact path='/projects' component={ProjectScreen} />
               <PrivateRoute exact path='/projects/new' component={CreateProjectScreen} />
+              <PrivateRoute exact path='/projects/:id/edit' component={ProjectDetailScreen} />
               <PrivateRoute exact path='/tickets' component={TicketScreen} />
-              <PrivateRoute exact path='/ticke/create' component={CreateTicketScreen} />
+              <PrivateRoute exact path='/tickets/new' component={CreateTicketScreen} />
               <Footer />
             </Col>
           </Row>

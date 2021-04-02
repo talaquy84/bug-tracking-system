@@ -2,19 +2,29 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Container, Row, Col, Table, Button } from 'react-bootstrap'
 import { LinkContainer, Link } from 'react-router-bootstrap'
-import { listAllTicket } from '../actions/ticketActions'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
+import { listAllProject } from '../actions/projectActions'
+import { listAllTicket } from '../actions/ticketActions'
+import { listAllUser } from '../actions/userActions'
 
 const TicketScreen = () => {
   const dispatch = useDispatch()
 
   const getAllTicket = useSelector(state => state.getAllTicket)
-  const { loading, error, tickets } = getAllTicket
+  const { success, loading, error, tickets } = getAllTicket
 
   useEffect(() => {
+    dispatch(listAllProject())
     dispatch(listAllTicket())
+    dispatch(listAllUser())
   }, [dispatch])
+
+  const deleteHandler = (id) => {
+    if (window.confirm('Are you sure?')) {
+      //DELETE
+    }
+  }
 
   return (
     <main>
@@ -22,7 +32,9 @@ const TicketScreen = () => {
         <Row>
           <Col>
             <h2>TICKETS </h2>
-            <Button className='ml-auto mr-5' >Create New Ticket</Button>
+            <LinkContainer to='/tickets/new'>
+              <Button className='ml-auto mr-5' >Create New Ticket</Button>
+            </LinkContainer>
             {loading ? <Loader /> : error ? <Message variant='danger'>
               {error} </Message> : (
               <Table striped bordered hover responsive className='table-sm'>
@@ -52,7 +64,7 @@ const TicketScreen = () => {
                           <ul style={{ paddingLeft: '0' }}>
                             <div >
                               {ticket.assignedTo.map(user => (
-                                <li>{user.name}</li>
+                                <li key={user.userId}>{user.name}</li>
                               ))}
                             </div>
                           </ul>
@@ -62,9 +74,18 @@ const TicketScreen = () => {
                       <td>{ticket.project.name}</td>
                       <td>{ticket.createdAt.substring(0, 10)}</td>
                       <td>
-                        <LinkContainer to={`/tickets/${ ticket._id }`}>
-                          <Button className='btn-sm' variant='light'>Details</Button>
+                        <LinkContainer to={`/tickets/${ ticket._id }/edit`}>
+                          <Button variant='light' className='btn-sm'>
+                            <i className='fas fa-edit'></i>
+                          </Button>
                         </LinkContainer>
+                        <Button
+                          variant='danger'
+                          className='btn-sm'
+                          onClick={() => deleteHandler(ticket._id)
+                          }>
+                          <i className='fas fa-trash'></i>
+                        </Button>
                       </td>
                     </tr>
                   ))}

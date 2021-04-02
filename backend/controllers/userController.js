@@ -128,9 +128,24 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   }
 })
 
+//@desc     GET all suer
+//@route    GET /api/users/all
+//@access   Private
+const getAllUser = asyncHandler(async (req, res) => {
+  const users = await User.find({})
+
+  if (users) {
+    res.json(users)
+  } else {
+    res.status(404)
+    throw new Error('Ticket not found')
+  }
+})
+
 export {
   getAuth,
   authUser,
   createUser,
-  updateUserProfile
+  updateUserProfile,
+  getAllUser
 }

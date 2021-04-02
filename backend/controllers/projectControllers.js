@@ -3,7 +3,7 @@ import Project from '../models/projectModel.js'
 
 //@desc     GET all projects
 //@route    GET /api/projects
-//@access   Public
+//@access   Private
 const getAllProjects = asyncHandler(async (req, res) => {
   const projects = await Project.find({})
 

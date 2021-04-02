@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Container, Row, Col, Table, Button } from 'react-bootstrap'
 import { LinkContainer, Link } from 'react-router-bootstrap'
 import { listAllProject } from '../actions/projectActions'
+import { listAllTicket } from '../actions/ticketActions'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 
@@ -14,8 +15,14 @@ const ProjectScreen = () => {
 
   useEffect(() => {
     dispatch(listAllProject())
+    dispatch(listAllTicket())
   }, [dispatch])
 
+  const deleteHandler = (id) => {
+    if (window.confirm('Are you sure?')) {
+      //DELETE
+    }
+  }
   return (
     <main>
       <Container className='py-3 px-0 ml-auto'>
@@ -48,18 +55,25 @@ const ProjectScreen = () => {
                         <ul>
                           {project.ticket.map(ticket => (
                             <LinkContainer to={`/tickets/${ ticket.ticketId }`} >
-                              <li>{ticket.ticketName}</li>
+                              <li key={ticket._id}>{ticket.ticketName}</li>
                             </LinkContainer>
                           ))}
                         </ul>
                       </td>
                       <td>{project.createdAt.substring(0, 10)}</td>
                       <td>
-                        <LinkContainer to={`/projects/${ project._id }`}>
-                          <Button className='btn-sm' variant='light'>
-                            Details
+                        <LinkContainer to={`/projects/${ project._id }/edit`}>
+                          <Button variant='light' className='btn-sm'>
+                            <i className='fas fa-edit'></i>
                           </Button>
                         </LinkContainer>
+                        <Button
+                          variant='danger'
+                          className='btn-sm'
+                          onClick={() => deleteHandler(project._id)
+                          }>
+                          <i className='fas fa-trash'></i>
+                        </Button>
                       </td>
                     </tr>
                   )

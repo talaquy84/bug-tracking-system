@@ -6,7 +6,7 @@ import Project from '../models/projectModel.js'
 
 //@desc     GET all ticket
 //@route    GET /api/tickets
-//@access   Public
+//@access   Private
 const getAllTicket = asyncHandler(async (req, res) => {
   const tickets = await Ticket.find({})
 
@@ -50,7 +50,7 @@ const createTicket = asyncHandler(async (req, res) => {
   })
 
   //Add new ticket only have 1 assign user, you can add more user to ticket later
-  const user = await User.findById(assignedTo[0].userId)
+  const user = await User.findById(assignedTo.userId)
 
   //Create new ticket in USER
   if (assignedTo) {
