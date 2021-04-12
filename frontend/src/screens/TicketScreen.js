@@ -1,28 +1,35 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Container, Row, Col, Table, Button } from 'react-bootstrap'
-import { LinkContainer, Link } from 'react-router-bootstrap'
+import { LinkContainer } from 'react-router-bootstrap'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import { listAllProject } from '../actions/projectActions'
-import { listAllTicket } from '../actions/ticketActions'
+import { listAllTicket, deleteTicket } from '../actions/ticketActions'
 import { listAllUser } from '../actions/userActions'
 
-const TicketScreen = () => {
+const TicketScreen = ({ history }) => {
   const dispatch = useDispatch()
 
   const getAllTicket = useSelector(state => state.getAllTicket)
-  const { success, loading, error, tickets } = getAllTicket
+  const { loading, error, tickets } = getAllTicket
+
+  const ticketDelete = useSelector(state => state.ticketDelete)
+  const { success } = ticketDelete
 
   useEffect(() => {
     dispatch(listAllProject())
     dispatch(listAllTicket())
     dispatch(listAllUser())
-  }, [dispatch])
 
-  const deleteHandler = (id) => {
+    if (success) {
+      dispatch(listAllTicket())
+    }
+  }, [dispatch, success])
+
+  const deleteHandler = (ticketId, assignedTo, projectId) => {
     if (window.confirm('Are you sure?')) {
-      //DELETE
+      dispatch(deleteTicket(ticketId, assignedTo, projectId))
     }
   }
 
@@ -35,8 +42,7 @@ const TicketScreen = () => {
             <LinkContainer to='/tickets/new'>
               <Button className='ml-auto mr-5' >Create New Ticket</Button>
             </LinkContainer>
-            {loading ? <Loader /> : error ? <Message variant='danger'>
-              {error} </Message> : (
+            {loading ? (<Loader />) : error ? (<Message variant='danger'> {error} </Message>) : (
               <Table striped bordered hover responsive className='table-sm'>
                 <thead>
                   <tr>
@@ -52,8 +58,8 @@ const TicketScreen = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {tickets.map(ticket => (
-                    <tr key={ticket._id}>
+                  {tickets.map((ticket, index) => (
+                    <tr key={index}>
                       <td>{ticket._id}</td>
                       <td>{ticket.name}</td>
                       <td>{ticket.description}</td>
@@ -82,7 +88,7 @@ const TicketScreen = () => {
                         <Button
                           variant='danger'
                           className='btn-sm'
-                          onClick={() => deleteHandler(ticket._id)
+                          onClick={() => deleteHandler(ticket._id, ticket.assignedTo, ticket.project.projectId)
                           }>
                           <i className='fas fa-trash'></i>
                         </Button>

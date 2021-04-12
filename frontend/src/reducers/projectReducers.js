@@ -5,7 +5,14 @@ import {
   PROJECT_CREATE_REQUEST,
   PROJECT_CREATE_SUCCESS,
   PROJECT_CREATE_FAIL,
-  PROJECT_CREATE_RESET
+  PROJECT_CREATE_RESET,
+  PROJECT_BYID_REQUEST,
+  PROJECT_BYID_SUCCESS,
+  PROJECT_BYID_FAIL,
+  PROJECT_UPDATE_REQUEST,
+  PROJECT_UPDATE_SUCCESS,
+  PROJECT_UPDATE_FAIL,
+  PROJECT_UPDATE_RESET
 } from '../constants/projectConstants'
 
 export const getAllProject = (state = { projects: [] }, action) => {
@@ -43,6 +50,49 @@ export const createNewProject = (state = {}, action) => {
         error: action.payload,
       }
     case PROJECT_CREATE_RESET:
+      return {}
+    default:
+      return state
+  }
+}
+
+export const getProjectById = (state = { project: {} }, action) => {
+  switch (action.type) {
+    case PROJECT_BYID_REQUEST:
+      return { loading: true }
+    case PROJECT_BYID_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+        project: action.payload,
+      }
+    case PROJECT_BYID_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      }
+    default:
+      return state
+  }
+}
+
+//udpate project
+export const projectUpdate = (state = {}, action) => {
+  switch (action.type) {
+    case PROJECT_UPDATE_REQUEST:
+      return { loading: true }
+    case PROJECT_UPDATE_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+        porject: action.payload
+      }
+    case PROJECT_UPDATE_FAIL:
+      return {
+        loading: false,
+        error: action.payload
+      }
+    case PROJECT_UPDATE_RESET:
       return {}
     default:
       return state

@@ -9,6 +9,9 @@ import {
   TICKET_CREATE_REQUEST,
   TICKET_CREATE_SUCCESS,
   TICKET_CREATE_FAIL,
+  TICKET_DELETE_REQUEST,
+  TICKET_DELETE_SUCCESS,
+  TICKET_DELETE_FAIL,
 } from '../constants/ticketConstants'
 import setAuthToken from '../utils/setAuthToken'
 
@@ -90,6 +93,47 @@ export const createTicket = (name, description, priority, status, assignedTo, pr
   } catch (error) {
     dispatch({
       type: TICKET_CREATE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+    })
+  }
+}
+
+//delete ticket
+export const deleteTicket = (ticketId, assignedTo, projectId) => async (dispatch) => {
+  try {
+    dispatch({
+      type: TICKET_DELETE_REQUEST
+    })
+    if (localStorage.token) {
+      setAuthToken(localStorage.token)
+    }
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    const { data } = await axios.delete(`/api/tickets/${ ticketId }`,
+      {
+        data: {
+          users: assignedTo,
+          projectId
+        },
+        config
+      }
+
+    )
+
+    dispatch({
+      type: TICKET_DELETE_SUCCESS,
+      payload: data
+    })
+  } catch (error) {
+    dispatch({
+      type: TICKET_DELETE_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

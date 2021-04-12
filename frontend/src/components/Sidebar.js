@@ -40,7 +40,13 @@ const Sidebar = () => {
             </Link>
           </li>
           <li>
-            <Link className='menu-link' to='/home'>
+            <Link className='menu-link' to='/users'>
+              <span className='fas fa-users'></span>
+              <span> View Users</span>
+            </Link>
+          </li>
+          <li>
+            <Link className='menu-link' to='/admin/users'>
               <span className='fas fa-users-cog'></span>
               <span> Manage Users</span>
             </Link>

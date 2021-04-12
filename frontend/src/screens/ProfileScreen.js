@@ -6,7 +6,6 @@ import Message from '../components/Message'
 import Loader from '../components/Loader'
 import { updateUserProfile, loadUser } from '../actions/userActions'
 import { listMyTickets } from '../actions/ticketActions'
-import { USER_UPDATE_RESET } from '../constants/userConstants'
 import { hidden } from 'colors'
 
 const ProfileScreen = ({ history }) => {

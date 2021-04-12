@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler'
 import Project from '../models/projectModel.js'
+import Ticket from '../models/ticketModel.js'
 
 //@desc     GET all projects
 //@route    GET /api/projects
@@ -20,7 +21,7 @@ const getAllProjects = asyncHandler(async (req, res) => {
 //@route    GET /api/projects/:id
 //@access   Public
 const getProjectById = asyncHandler(async (req, res) => {
-  const projects = await Project.findById(req.body._id)
+  const projects = await Project.findById(req.params.id)
 
   if (projects) {
     res.json(projects)
@@ -60,9 +61,46 @@ const createProject = asyncHandler(async (req, res) => {
   }
 })
 
+//@desc     Update user profile
+//@route    PUT /api/project/:id
+//@access   Private
+const updateProject = asyncHandler(async (req, res) => {
+  const project = await Project.findById(req.params.id)
+  //Update user in ticket
+
+  const tickets = await Ticket.updateMany(
+    { "project.projectId": req.params.id },
+    {
+      $set: {
+        "project.name": req.body.name,
+      }
+    },
+    {
+      new: true
+    }
+  )
+
+  if (project) {
+    //if req.body.name exists, or user.name stay the same
+    project.name = req.body.name || project.name
+    project.description = req.body.description || project.description
+
+    const updatedProject = await project.save()
+
+    res.json({
+      _id: updatedProject._id,
+      name: updatedProject.name,
+      description: updatedProject.description,
+    })
+  } else {
+    res.status(404)
+    throw new Error('User not found')
+  }
+})
 
 export {
   getAllProjects,
   getProjectById,
-  createProject
+  createProject,
+  updateProject
 }

@@ -99,9 +99,41 @@ const createTicket = asyncHandler(async (req, res) => {
   }
 })
 
+//@desc     Delete single ticket
+//@route    DELETE /api/tickets/:id
+//@access   Private
+const deleteTicket = asyncHandler(async (req, res) => {
+  const ticket = await Ticket.findById(req.params.id)
+
+  req.body.users.forEach(async user => {
+    console.log(user.userId)
+    await User.updateMany(
+      { _id: user.userId },
+      { $pull: { ticket: { ticketId: req.params.id } } },
+      { safe: true, multi: true }
+    )
+  })
+
+  await Project.updateMany(
+    { _id: req.body.projectId },
+    { $pull: { ticket: { ticketId: req.params.id } } },
+    { safe: true, multi: true }
+  )
+
+  if (ticket) {
+    await ticket.remove()
+    res.json({ message: 'Product removed' })
+  } else {
+    res.status(404)
+    throw new Error('Product not found')
+  }
+
+})
+
 export {
   getAllTicket,
   getMyTickets,
-  createTicket
+  createTicket,
+  deleteTicket
 }
 

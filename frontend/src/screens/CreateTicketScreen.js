@@ -24,15 +24,12 @@ const CreateTicketScreen = ({ history }) => {
   const [assignedTo, setAssignedTo] = useState({ name: '', email: '', role: '', userId: '' })
   const [project, setProject] = useState({ name: '', projectId: '' })
 
-  console.log(name, description, priority, status, assignedTo, project)
-
   const createNewTicket = useSelector(state => state.createNewTicket)
   const { loading, error, success, ticket } = createNewTicket
 
+  //Find the way to set initial asysnc
   useEffect(() => {
     dispatch({ type: TICKET_CREATE_RESET })
-    // setAssignedTo({ name: users[0].name, email: users[0].email, role: users[0].role, userId: users[0]._id })
-    // setProject({ name: projects[0].name, projectId: projects[0]._id })
     if (success) {
       history.push(`${ ticket._id }/edit`)
     }
@@ -140,12 +137,11 @@ const CreateTicketScreen = ({ history }) => {
 
               <Button variant="primary" type="submit" onClick={createTicketHandler}>
                 Create
-          </Button>
+            </Button>
             </Form>
           </Col>
         </Row>
       </Container>
-
     </main>
   )
 }

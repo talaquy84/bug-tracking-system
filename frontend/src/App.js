@@ -11,6 +11,8 @@ import ProjectDetailScreen from './screens/ProjectDetailScreen'
 import CreateProjectScreen from './screens/CreateProjectScreen'
 import TicketScreen from './screens/TicketScreen'
 import CreateTicketScreen from './screens/CreateTicketScreen'
+import UsersScreen from './screens/UsersScreen'
+import ManageUsersScreen from './screens/ManageUsersScreen'
 import PrivateRoute from './routing/PrivateRoute'
 import { loadUser } from './actions/userActions'
 import { listAllProject } from './actions/projectActions'
@@ -47,13 +49,18 @@ function App() {
             {/* Main screen */}
             <Col xs={9} sm={9} md={10} lg={10} className='px-0'>
               <Header />
-              <PrivateRoute exactpath='/home' component={HomeScreen} />
-              <PrivateRoute exact path='/profile' component={ProfileScreen} />
-              <PrivateRoute exact path='/projects' component={ProjectScreen} />
-              <PrivateRoute exact path='/projects/new' component={CreateProjectScreen} />
-              <PrivateRoute exact path='/projects/:id/edit' component={ProjectDetailScreen} />
-              <PrivateRoute exact path='/tickets' component={TicketScreen} />
-              <PrivateRoute exact path='/tickets/new' component={CreateTicketScreen} />
+              <Switch>
+                <PrivateRoute exact path='/home' component={HomeScreen} />
+                <PrivateRoute exact path='/profile' component={ProfileScreen} />
+                <PrivateRoute exact path='/projects' component={ProjectScreen} />
+                <PrivateRoute exact path='/projects/new' component={CreateProjectScreen} />
+                <PrivateRoute exact path='/projects/:id/edit' component={ProjectDetailScreen} />
+                <PrivateRoute exact path='/tickets' component={TicketScreen} />
+                <PrivateRoute exact path='/tickets/new' component={CreateTicketScreen} />
+                <PrivateRoute exact path='/users' component={UsersScreen} />
+                <PrivateRoute exact path='/admin/users' component={ManageUsersScreen} />
+                <PrivateRoute path="*" component={HomeScreen} />
+              </Switch>
               <Footer />
             </Col>
           </Row>

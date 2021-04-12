@@ -114,6 +114,7 @@ export const getAllUser = (state = { users: [] }, action) => {
       return { loading: true }
     case USER_DETAILS_SUCCESS:
       return {
+        success: true,
         loading: false,
         users: action.payload,
       }
