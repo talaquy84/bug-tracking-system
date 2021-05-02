@@ -12,7 +12,10 @@ import {
   PROJECT_UPDATE_REQUEST,
   PROJECT_UPDATE_SUCCESS,
   PROJECT_UPDATE_FAIL,
-  PROJECT_UPDATE_RESET
+  PROJECT_UPDATE_RESET,
+  PROJECT_DELETE_REQUEST,
+  PROJECT_DELETE_SUCCESS,
+  PROJECT_DELETE_FAIL,
 } from '../constants/projectConstants'
 
 export const getAllProject = (state = { projects: [] }, action) => {
@@ -94,6 +97,19 @@ export const projectUpdate = (state = {}, action) => {
       }
     case PROJECT_UPDATE_RESET:
       return {}
+    default:
+      return state
+  }
+}
+
+export const projectDelete = (state = {}, action) => {
+  switch (action.type) {
+    case PROJECT_DELETE_REQUEST:
+      return { loading: true }
+    case PROJECT_DELETE_SUCCESS:
+      return { loading: false, success: true }
+    case PROJECT_DELETE_FAIL:
+      return { loading: false, error: action.payload }
     default:
       return state
   }

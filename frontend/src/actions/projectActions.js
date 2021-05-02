@@ -12,6 +12,9 @@ import {
   PROJECT_UPDATE_REQUEST,
   PROJECT_UPDATE_SUCCESS,
   PROJECT_UPDATE_FAIL,
+  PROJECT_DELETE_REQUEST,
+  PROJECT_DELETE_SUCCESS,
+  PROJECT_DELETE_FAIL,
 } from '../constants/projectConstants'
 import setAuthToken from '../utils/setAuthToken'
 
@@ -128,6 +131,44 @@ export const updateProject = (id, name, description) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: PROJECT_UPDATE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+    })
+  }
+}
+
+export const deleteProject = (projectId, ticketIds) => async (dispatch) => {
+  try {
+    dispatch({
+      type: PROJECT_DELETE_REQUEST
+    })
+    if (localStorage.token) {
+      setAuthToken(localStorage.token)
+    }
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    const { data } = await axios.delete(`/api/projects/${ projectId }`,
+      {
+        data: {
+          tickets: ticketIds,
+        },
+        config
+      }
+    )
+
+    dispatch({
+      type: PROJECT_DELETE_SUCCESS,
+      payload: data
+    })
+  } catch (error) {
+    dispatch({
+      type: PROJECT_DELETE_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

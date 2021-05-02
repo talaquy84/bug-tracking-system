@@ -15,6 +15,15 @@ import {
   USER_DETAILS_REQUEST,
   USER_DETAILS_SUCCESS,
   USER_DETAILS_FAIL,
+  USER_BYID_REQUEST,
+  USER_BYID_SUCCESS,
+  USER_BYID_FAIL,
+  USER_UPDATE_BYID_REQUEST,
+  USER_UPDATE_BYID_SUCCESS,
+  USER_UPDATE_BYID_FAIL,
+  USER_DELETE_REQUEST,
+  USER_DELETE_SUCCESS,
+  USER_DELETE_FAIL,
 } from '../constants/userConstants'
 import setAuthToken from '../utils/setAuthToken'
 
@@ -182,6 +191,101 @@ export const listAllUser = () => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: USER_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+    })
+  }
+}
+
+export const loadUserById = (id) => async (dispatch) => {
+  try {
+    dispatch({
+      type: USER_BYID_REQUEST
+    })
+    if (localStorage.token) {
+      setAuthToken(localStorage.token)
+    }
+    const { data } = await axios.get(`/api/users/${ id }`)
+
+    dispatch({
+      type: USER_BYID_SUCCESS,
+      payload: data
+    })
+  } catch (error) {
+    dispatch({
+      type: USER_BYID_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+    })
+  }
+}
+
+//update user
+export const updateUserProfileById = (user) => async (dispatch) => {
+  try {
+    dispatch({
+      type: USER_UPDATE_BYID_REQUEST
+    })
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    if (localStorage.token) {
+      setAuthToken(localStorage.token)
+    }
+    const { data } = await axios.put(
+      `/api/users/${ user.id }`,
+      user,
+      config
+    )
+
+    dispatch({
+      type: USER_UPDATE_BYID_SUCCESS,
+      payload: data
+    })
+  } catch (error) {
+    dispatch({
+      type: USER_UPDATE_BYID_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+    })
+  }
+}
+
+//delete ticket
+export const deleteUser = (userId) => async (dispatch) => {
+  try {
+    dispatch({
+      type: USER_DELETE_REQUEST
+    })
+    if (localStorage.token) {
+      setAuthToken(localStorage.token)
+    }
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    const { data } = await axios.delete(`/api/users/${ userId }`,
+      config
+    )
+
+    dispatch({
+      type: USER_DELETE_SUCCESS,
+      payload: data
+    })
+  } catch (error) {
+    dispatch({
+      type: USER_DELETE_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

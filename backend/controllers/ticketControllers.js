@@ -38,9 +38,9 @@ const getMyTickets = asyncHandler(async (req, res) => {
 const createTicket = asyncHandler(async (req, res) => {
   const { name, description, priority, status, assignedTo, project } = req.body
 
-  const userExists = await Ticket.findOne({ name: name })
+  const ticketExists = await Ticket.findOne({ name: name })
 
-  if (userExists) {
+  if (ticketExists) {
     res.status(400)
     throw new Error('Ticket already exists')
   }
@@ -105,8 +105,8 @@ const createTicket = asyncHandler(async (req, res) => {
 const deleteTicket = asyncHandler(async (req, res) => {
   const ticket = await Ticket.findById(req.params.id)
 
+  //For array
   req.body.users.forEach(async user => {
-    console.log(user.userId)
     await User.updateMany(
       { _id: user.userId },
       { $pull: { ticket: { ticketId: req.params.id } } },
@@ -122,18 +122,83 @@ const deleteTicket = asyncHandler(async (req, res) => {
 
   if (ticket) {
     await ticket.remove()
-    res.json({ message: 'Product removed' })
+    res.json({ message: 'Ticket removed' })
   } else {
     res.status(404)
-    throw new Error('Product not found')
+    throw new Error('Ticket not found')
+  }
+})
+
+//@desc     GET ticket by ID
+//@route    GET /api/tickets/:id
+//@access   Private
+const getTicketById = asyncHandler(async (req, res) => {
+  const ticket = await Ticket.findById(req.params.id)
+
+  if (ticket) {
+    res.json(ticket)
+  } else {
+    res.status(404)
+    throw new Error('Ticket not found')
+  }
+})
+
+//@desc     Update ticket by ID
+//@route    PUT /api/tickets/:id
+//@access   Private
+const updateTicket = asyncHandler(async (req, res) => {
+  const { name, description, priority, status, project } = req.body
+
+  const ticket = await Ticket.findById(req.params.id)
+  //Edit project if project is modified
+  if (ticket.project.projectId !== project.projectId) {
+    //Delete the ticket in old project
+    await Project.updateMany(
+      { _id: ticket.project.projectId },
+      { $pull: { ticket: { ticketId: req.params.id } } },
+      { safe: true, multi: true }
+    )
+
+    //Create the ticket in new project
+    const ticketInNewProject = await Project.findById(project.projectId)
+    if (ticketInNewProject) {
+      ticketInNewProject.ticket.push({
+        ticketName: name || ticket.name,
+        priority: priority || ticket.priority,
+        status: status || ticket.status,
+        ticketId: req.params.id
+      })
+    }
+    const updatedProject = await ticketInNewProject.save()
   }
 
+  //Update ticket
+  if (ticket) {
+    ticket.name = name || ticket.name
+    ticket.description = description || ticket.description
+    ticket.priority = priority || ticket.priority
+    ticket.status = status || ticket.status
+    ticket.project = project || ticket.project
+  }
+  const updatedTicket = await ticket.save()
+
+  if (ticket) {
+    res.status(201).json({
+
+      ticket: updatedTicket
+    })
+  } else {
+    res.status(400)
+    throw new Error('Invalid ticket data')
+  }
 })
 
 export {
   getAllTicket,
   getMyTickets,
   createTicket,
-  deleteTicket
+  deleteTicket,
+  getTicketById,
+  updateTicket
 }
 

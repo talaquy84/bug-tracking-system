@@ -1,6 +1,7 @@
 import asyncHandler from 'express-async-handler'
 import Project from '../models/projectModel.js'
 import Ticket from '../models/ticketModel.js'
+import User from '../models/userModel.js'
 
 //@desc     GET all projects
 //@route    GET /api/projects
@@ -67,7 +68,6 @@ const createProject = asyncHandler(async (req, res) => {
 const updateProject = asyncHandler(async (req, res) => {
   const project = await Project.findById(req.params.id)
   //Update user in ticket
-
   const tickets = await Ticket.updateMany(
     { "project.projectId": req.params.id },
     {
@@ -98,9 +98,47 @@ const updateProject = asyncHandler(async (req, res) => {
   }
 })
 
+//@desc     Delete single project
+//@route    DELETE /api/projects/:id
+//@access   Private
+const deleteProject = asyncHandler(async (req, res) => {
+  const project = await Project.findById(req.params.id)
+
+  const users = await User.find({})
+  users.forEach(async user => {
+    await User.updateMany(
+      {},
+      { $pull: { ticket: { ticketId: req.params.id } } },
+      { safe: true, multi: true }
+    )
+  })
+
+  req.body.tickets.forEach(async ticket => {
+    const ticketToDelete = await Ticket.findById(ticket.ticketId)
+    users.forEach(async user => {
+      await User.updateMany(
+        {},
+        { $pull: { ticket: { ticketId: ticket.ticketId } } },
+        { safe: true, multi: true }
+      )
+    })
+    //Detele for obj
+    await ticketToDelete.remove()
+  })
+
+  if (project) {
+    await project.remove()
+    res.json({ message: 'Project removed' })
+  } else {
+    res.status(404)
+    throw new Error('Project not found')
+  }
+})
+
 export {
   getAllProjects,
   getProjectById,
   createProject,
-  updateProject
+  updateProject,
+  deleteProject
 }

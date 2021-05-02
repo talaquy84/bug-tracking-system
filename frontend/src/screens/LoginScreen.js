@@ -84,7 +84,7 @@ const LoginScreen = ({ location, history }) => {
           <Row className="justify-content-md-center">
             <Col>
               Forget your
-            <Link to='/register'> Password?</Link>
+            <Link to=''> Password?</Link>
             </Col>
           </Row>
         </Container>

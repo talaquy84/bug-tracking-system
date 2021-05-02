@@ -8,6 +8,7 @@ import { listAllUser } from '../actions/userActions'
 
 const UsersScreen = () => {
   const dispatch = useDispatch()
+
   const getAllUser = useSelector(state => state.getAllUser)
   const { loading, error, users } = getAllUser
 
@@ -49,7 +50,7 @@ const UsersScreen = () => {
                           ))}
                         </ul>
                       </td>
-                      <td>{user.isAdmin && <i class="fas fa-check"></i>}</td>
+                      <td>{user.isAdmin && <i className="fas fa-check"></i>}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -12,6 +12,12 @@ import {
   TICKET_DELETE_REQUEST,
   TICKET_DELETE_SUCCESS,
   TICKET_DELETE_FAIL,
+  TICKET_UPDATE_REQUEST,
+  TICKET_UPDATE_SUCCESS,
+  TICKET_UPDATE_FAIL,
+  TICKET_BYID_REQUEST,
+  TICKET_BYID_SUCCESS,
+  TICKET_BYID_FAIL,
 } from '../constants/ticketConstants'
 import setAuthToken from '../utils/setAuthToken'
 
@@ -124,7 +130,6 @@ export const deleteTicket = (ticketId, assignedTo, projectId) => async (dispatch
         },
         config
       }
-
     )
 
     dispatch({
@@ -134,6 +139,67 @@ export const deleteTicket = (ticketId, assignedTo, projectId) => async (dispatch
   } catch (error) {
     dispatch({
       type: TICKET_DELETE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+    })
+  }
+}
+
+//Create new ticket
+export const updateTicket = (ticketId, name, description, priority, status, project) => async (dispatch) => {
+  try {
+    dispatch({
+      type: TICKET_UPDATE_REQUEST
+    })
+    if (localStorage.token) {
+      setAuthToken(localStorage.token)
+    }
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    const { data } = await axios.put(`/api/tickets/${ ticketId }`,
+      {
+        name, description, priority, status, project
+      },
+      config
+    )
+    dispatch({
+      type: TICKET_UPDATE_SUCCESS,
+      payload: data
+    })
+  } catch (error) {
+    dispatch({
+      type: TICKET_UPDATE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+    })
+  }
+}
+
+export const listTicketByID = (ticketId) => async (dispatch) => {
+  try {
+    dispatch({
+      type: TICKET_BYID_REQUEST
+    })
+    if (localStorage.token) {
+      setAuthToken(localStorage.token)
+    }
+    const { data } = await axios.get(`/api/tickets/${ ticketId }`)
+
+    dispatch({
+      type: TICKET_BYID_SUCCESS,
+      payload: data
+    })
+  } catch (error) {
+    dispatch({
+      type: TICKET_BYID_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

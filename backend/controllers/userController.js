@@ -128,7 +128,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   }
 })
 
-//@desc     GET all suer
+//@desc     GET all user
 //@route    GET /api/users/all
 //@access   Private
 const getAllUser = asyncHandler(async (req, res) => {
@@ -138,7 +138,91 @@ const getAllUser = asyncHandler(async (req, res) => {
     res.json(users)
   } else {
     res.status(404)
-    throw new Error('Ticket not found')
+    throw new Error('User not found')
+  }
+})
+
+//@desc     GET user by ID
+//@route    GET /api/users/all
+//@access   Private/Admin
+const getUserById = asyncHandler(async (req, res) => {
+  const users = await User.findById(req.params.id).select('-password')
+
+  if (users) {
+    res.json(users)
+  } else {
+    res.status(404)
+    throw new Error('User not found')
+  }
+})
+
+//@desc     Update user profile by ID
+//@route    PUT /api/users/:id
+//@access   Private/Admin
+const updateUserProfileById = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id)
+  //Update user in ticket
+  const tickets = await Ticket.updateMany(
+    {},
+    {
+      $set: {
+        "assignedTo.$[user].name": req.body.name,
+        "assignedTo.$[user].email": req.body.email,
+        "assignedTo.$[user].role": req.body.role,
+      }
+    },
+    {
+      arrayFilters: [{ "user.userId": req.params.id }],
+      new: true
+    }
+  )
+
+  if (user) {
+    //if req.body.name exists, or user.name stay the same
+    user.name = req.body.name || user.name
+    user.email = req.body.email || user.email
+    if (req.body.password) {
+      user.password = req.body.password
+    }
+    user.role = req.body.role || user.role
+
+    const updatedUser = await user.save()
+
+    res.json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+      role: updatedUser.role,
+      token: generateToken(user._id), tickets
+    })
+  } else {
+    res.status(404)
+    throw new Error('User not found')
+  }
+})
+
+//@desc     Delete single user
+//@route    DELETE /api/users/:id
+//@access   Private
+const deleteUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id)
+
+  const tickets = await Ticket.find({})
+  tickets.forEach(async ticket => {
+    await Ticket.updateMany(
+      {},
+      { $pull: { assignedTo: { userId: req.params.id } } },
+      { safe: true, multi: true }
+    )
+  })
+
+  if (user) {
+    await user.remove()
+    res.json({ message: 'User removed' })
+  } else {
+    res.status(404)
+    throw new Error('User not found')
   }
 })
 
@@ -147,5 +231,8 @@ export {
   authUser,
   createUser,
   updateUserProfile,
-  getAllUser
+  getAllUser,
+  getUserById,
+  updateUserProfileById,
+  deleteUser
 }

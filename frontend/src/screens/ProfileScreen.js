@@ -4,6 +4,7 @@ import { LinkContainer } from 'react-router-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
+import { USER_UPDATE_RESET } from '../constants/userConstants'
 import { updateUserProfile, loadUser } from '../actions/userActions'
 import { listMyTickets } from '../actions/ticketActions'
 import { hidden } from 'colors'
@@ -29,14 +30,15 @@ const ProfileScreen = ({ history }) => {
 
   useEffect(() => {
     if (!user || !user.name || success) {
+      dispatch({ type: USER_UPDATE_RESET })
       dispatch(loadUser())
+      dispatch(listMyTickets())
     } else {
       setName(user.name)
       setEmail(user.email)
       setRole((user.role))
-      dispatch(listMyTickets())
     }
-  }, [dispatch, history, user, success])
+  }, [dispatch, user, success])
 
   const submitHandler = (e) => {
     e.preventDefault()
@@ -142,7 +144,7 @@ const ProfileScreen = ({ history }) => {
                     <td> {ticket.project.name}</td>
                     <td>{ticket.createdAt.substring(0, 10)}</td>
                     <td>
-                      <LinkContainer to={`/order`}>
+                      <LinkContainer to={`/tickets/${ ticket._id }/edit`}>
                         <Button className='btn-sm' variant='light'>Details</Button>
                       </LinkContainer>
                     </td>

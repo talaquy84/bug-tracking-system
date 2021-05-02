@@ -1,58 +1,64 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Button, Row, Col, Container } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { createTicket } from '../actions/ticketActions'
-import { listAllProject } from '../actions/projectActions'
-import { listAllUser } from '../actions/userActions'
-import { TICKET_CREATE_RESET } from '../constants/ticketConstants'
+import { updateTicket } from '../actions/ticketActions'
+import { listTicketByID } from '../actions/ticketActions'
+import { TICKET_UPDATE_RESET } from '../constants/ticketConstants'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 
-const CreateTicketScreen = ({ history }) => {
+const TicketDetailScreen = ({ history, match }) => {
   const dispatch = useDispatch()
+  const ticketId = match.params.id
 
-  const getAllUser = useSelector(state => state.getAllUser)
-  const { loading: loadingUser, error: errorUser, users } = getAllUser
+  const [name, setName] = useState('')
+  const [description, setDescription] = useState('')
+  const [priority, setPriority] = useState('')
+  const [status, setStatus] = useState('')
+  const [project, setProject] = useState({ name: '', projectId: '' })
 
   const getAllProject = useSelector(state => state.getAllProject)
   const { loading: loadingProject, error: errorProject, projects } = getAllProject
 
-  const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
-  const [priority, setPriority] = useState('Low')
-  const [status, setStatus] = useState('Pending')
-  const [assignedTo, setAssignedTo] = useState({ name: '', email: '', role: '', userId: '' })
-  const [project, setProject] = useState({ name: '', projectId: '' })
+  const ticketById = useSelector(state => state.ticketById)
+  const { loading, ticket } = ticketById
 
-  const createNewTicket = useSelector(state => state.createNewTicket)
-  const { loading, error, success } = createNewTicket
+  const ticketUpdate = useSelector(state => state.ticketUpdate)
+  const { error, success } = ticketUpdate
 
   //Find the way to set initial asysnc
   useEffect(() => {
-
     if (success) {
-      dispatch({ type: TICKET_CREATE_RESET })
+      dispatch({ type: TICKET_UPDATE_RESET })
+      dispatch(listTicketByID(ticketId))
       history.push(`/tickets`)
+    } else {
+      if (!ticket || ticket._id !== ticketId) {
+        dispatch(listTicketByID(ticketId))
+      } else {
+        setName(ticket.name)
+        setDescription(ticket.description)
+        setPriority(ticket.priority)
+        setStatus(ticket.status)
+        setProject(ticket.project)
+      }
     }
-  }, [dispatch, history, success])
+  }, [dispatch, success, ticketId, history, ticket])
 
-  const createTicketHandler = (e) => {
+  const updateTicketHandler = (e) => {
     e.preventDefault()
-    dispatch(createTicket(
-      name, description, priority, status, assignedTo, project))
+    dispatch(updateTicket(ticketId, name, description, priority, status, project))
   }
-
   return (
     <main>
       <Container className='py-3 px-0 ml-auto'>
         <Row className='px-5 py-4'>
           <Col md={6} >
-            <h2>Create New Ticket</h2>
+            <h2>Ticket Detail </h2>
             {success && <Message variant='success'>Project is Created</Message>}
             {errorProject && <Message variant='danger'>{errorProject}</Message>}
-            {errorUser && <Message variant='danger'>{errorUser}</Message>}
             {error && <Message variant='danger'>{error}</Message>}
-            {loadingProject || loadingUser || loading && <Loader />}
+            {loadingProject || loading && <Loader />}
             <Form >
               <Form.Group controlId="name">
                 <Form.Label>Ticket Name</Form.Label>
@@ -98,39 +104,16 @@ const CreateTicketScreen = ({ history }) => {
                 </Form.Control>
               </Form.Group>
 
-              <Form.Group controlId="assignedTo">
-                <Form.Label>Assigned To</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={assignedTo.name}
-                  onChange={(e) => setAssignedTo({
-                    name: users[e.target.options.selectedIndex - 1].name,
-                    email: users[e.target.options.selectedIndex - 1].email,
-                    role: users[e.target.options.selectedIndex - 1].role,
-                    userId: users[e.target.options.selectedIndex - 1]._id,
-                  })}
-                >
-                  <option></option>
-                  {loadingUser ? <Loader /> : (users.map((user, index) => {
-                    return (
-                      <option key={index}>{user.name}</option>
-                    )
-                  })
-                  )}
-                </Form.Control>
-              </Form.Group>
-
               <Form.Group controlId="project">
                 <Form.Label>Project</Form.Label>
                 <Form.Control
                   as="select"
                   value={project.name}
                   onChange={(e) => setProject({
-                    name: projects[e.target.options.selectedIndex - 1].name,
-                    projectId: projects[e.target.options.selectedIndex - 1]._id
+                    name: projects[e.target.options.selectedIndex].name,
+                    projectId: projects[e.target.options.selectedIndex]._id
                   })}
                 >
-                  <option></option>
                   {loadingProject ? <Loader /> : (projects.map((project, index) => (
                     <option key={index}>{project.name}</option>
                   ))
@@ -138,8 +121,8 @@ const CreateTicketScreen = ({ history }) => {
                 </Form.Control>
               </Form.Group>
 
-              <Button variant="primary" type="submit" onClick={createTicketHandler}>
-                Create
+              <Button variant="primary" type="submit" onClick={updateTicketHandler}>
+                UPDATE
             </Button>
             </Form>
           </Col>
@@ -149,4 +132,4 @@ const CreateTicketScreen = ({ history }) => {
   )
 }
 
-export default CreateTicketScreen
+export default TicketDetailScreen

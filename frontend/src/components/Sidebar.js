@@ -1,8 +1,21 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { loadUser } from '../actions/userActions'
+import Loader from '../components/Loader'
 import './Sidebar.css'
 
 const Sidebar = () => {
+  const dispatch = useDispatch()
+
+  const auth = useSelector(state => state.auth)
+  const { loading, user } = auth
+
+  useEffect(() => {
+    if (!user || !user.name) {
+      dispatch(loadUser())
+    }
+  }, [dispatch])
   return (
     <div style={{ background: '#027581', height: '100%', color: "white" }} className='border border-secondary border-5'>
       <div >
@@ -13,6 +26,7 @@ const Sidebar = () => {
           </h3>
         </Link>
       </div>
+
       <div className='sidebar-menu'>
         <ul>
           <li>
@@ -45,6 +59,7 @@ const Sidebar = () => {
               <span> View Users</span>
             </Link>
           </li>
+
           <li>
             <Link className='menu-link' to='/admin/users'>
               <span className='fas fa-users-cog'></span>
@@ -53,7 +68,6 @@ const Sidebar = () => {
           </li>
         </ul>
       </div>
-
     </div >
   )
 }

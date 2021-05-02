@@ -4,7 +4,7 @@ import { Container, Row, Col, Table, Button } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import { listAllUser } from '../actions/userActions'
+import { listAllUser, deleteUser } from '../actions/userActions'
 
 const ManageUsersScreen = () => {
   const dispatch = useDispatch()
@@ -12,9 +12,22 @@ const ManageUsersScreen = () => {
   const getAllUser = useSelector(state => state.getAllUser)
   const { loading, error, users } = getAllUser
 
+  const userDelete = useSelector(state => state.userDelete)
+  const { success } = userDelete
+
   useEffect(() => {
     dispatch(listAllUser())
-  }, [dispatch])
+
+    if (success) {
+      dispatch(listAllUser())
+    }
+  }, [dispatch, success])
+
+  const deleteHandler = (userId) => {
+    if (window.confirm('Are you sure?')) {
+      dispatch(deleteUser(userId))
+    }
+  }
 
   return (
     <main>
@@ -54,7 +67,7 @@ const ManageUsersScreen = () => {
                       </td>
                       <td>{user.isAdmin && <i class="fas fa-check"></i>}</td>
                       <td>
-                        <LinkContainer to={`/tickets/${ user._id }/edit`}>
+                        <LinkContainer to={`/users/${ user._id }/edit`}>
                           <Button variant='light' className='btn-sm'>
                             <i className='fas fa-edit'></i>
                           </Button>
@@ -62,8 +75,8 @@ const ManageUsersScreen = () => {
                         <Button
                           variant='danger'
                           className='btn-sm'
-                        // onClick={() => deleteHandler(ticket._id, ticket.assignedTo, ticket.project.projectId)
-                        >
+                          onClick={() => deleteHandler(user._id)
+                          }>
                           <i className='fas fa-trash'></i>
                         </Button>
                       </td>

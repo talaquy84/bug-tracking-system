@@ -19,7 +19,7 @@ const CreateProjectScreen = ({ history }) => {
     dispatch({ type: PROJECT_CREATE_RESET })
 
     if (success) {
-      history.push(`${ project._id }/edit`)
+      history.push(`/projects`)
     }
   }, [dispatch, history, success])
 

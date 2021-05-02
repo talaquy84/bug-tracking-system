@@ -12,6 +12,8 @@ import CreateProjectScreen from './screens/CreateProjectScreen'
 import TicketScreen from './screens/TicketScreen'
 import CreateTicketScreen from './screens/CreateTicketScreen'
 import UsersScreen from './screens/UsersScreen'
+import UserDetailScreen from './screens/UserDetailScreen'
+import TicketDetailScreen from './screens/TicketDetailScreen'
 import ManageUsersScreen from './screens/ManageUsersScreen'
 import PrivateRoute from './routing/PrivateRoute'
 import { loadUser } from './actions/userActions'
@@ -56,8 +58,10 @@ function App() {
                 <PrivateRoute exact path='/projects/new' component={CreateProjectScreen} />
                 <PrivateRoute exact path='/projects/:id/edit' component={ProjectDetailScreen} />
                 <PrivateRoute exact path='/tickets' component={TicketScreen} />
+                <PrivateRoute exact path='/tickets/:id/edit' component={TicketDetailScreen} />
                 <PrivateRoute exact path='/tickets/new' component={CreateTicketScreen} />
                 <PrivateRoute exact path='/users' component={UsersScreen} />
+                <PrivateRoute exact path='/users/:id/edit' component={UserDetailScreen} />
                 <PrivateRoute exact path='/admin/users' component={ManageUsersScreen} />
                 <PrivateRoute path="*" component={HomeScreen} />
               </Switch>

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Container, Row, Col, Table, Button } from 'react-bootstrap'
 import { LinkContainer, Link } from 'react-router-bootstrap'
-import { listAllProject } from '../actions/projectActions'
+import { listAllProject, deleteProject } from '../actions/projectActions'
 import { listAllTicket } from '../actions/ticketActions'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
@@ -13,15 +13,24 @@ const ProjectScreen = () => {
   const getAllProject = useSelector(state => state.getAllProject)
   const { loading, error, projects } = getAllProject
 
+  const projectDelete = useSelector(state => state.projectDelete)
+  const { success } = projectDelete
+
+
   useEffect(() => {
     dispatch(listAllProject())
     dispatch(listAllTicket())
-  }, [dispatch])
 
-  const deleteHandler = (id) => {
-    if (window.confirm('Are you sure?')) {
-      //DELETE
+    if (success) {
+      dispatch(listAllProject())
     }
+  }, [dispatch, success])
+
+  const deleteHandler = (projectId, tickets) => {
+    if (window.confirm('Are you sure?')) {
+      dispatch(deleteProject(projectId, tickets))
+    }
+
   }
   return (
     <main>
@@ -70,7 +79,7 @@ const ProjectScreen = () => {
                         <Button
                           variant='danger'
                           className='btn-sm'
-                          onClick={() => deleteHandler(project._id)
+                          onClick={() => deleteHandler(project._id, project.ticket)
                           }>
                           <i className='fas fa-trash'></i>
                         </Button>
