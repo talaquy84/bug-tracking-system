@@ -30,8 +30,8 @@ const ProjectScreen = () => {
     if (window.confirm('Are you sure?')) {
       dispatch(deleteProject(projectId, tickets))
     }
-
   }
+
   return (
     <main>
       <Container className='py-3 px-0 ml-auto'>

@@ -3,7 +3,7 @@ import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { auth, userRegister, userLogin, userUpdateProfile, getAllUser, getUserById, userUpdateProfileById, userDelete } from './reducers/userReducers'
 import { getAllProject, createNewProject, getProjectById, projectUpdate, projectDelete } from './reducers/projectReducers'
-import { getAllTicket, getMyTickets, createNewTicket, ticketDelete, ticketUpdate, ticketById } from './reducers/ticketReducers'
+import { getAllTicket, getMyTickets, createNewTicket, ticketDelete, ticketUpdate, ticketById, ticketAssign, ticketRemoveUser } from './reducers/ticketReducers'
 
 const reducer = combineReducers({
   auth,
@@ -20,6 +20,8 @@ const reducer = combineReducers({
   createNewTicket,
   ticketDelete,
   ticketUpdate,
+  ticketAssign,
+  ticketRemoveUser,
   getAllProject,
   createNewProject,
   getProjectById,

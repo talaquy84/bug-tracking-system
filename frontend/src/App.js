@@ -14,6 +14,7 @@ import CreateTicketScreen from './screens/CreateTicketScreen'
 import UsersScreen from './screens/UsersScreen'
 import UserDetailScreen from './screens/UserDetailScreen'
 import TicketDetailScreen from './screens/TicketDetailScreen'
+import TicketAssignScreen from './screens/TicketAssignScreen'
 import ManageUsersScreen from './screens/ManageUsersScreen'
 import PrivateRoute from './routing/PrivateRoute'
 import { loadUser } from './actions/userActions'
@@ -42,7 +43,7 @@ function App() {
       <Switch>
         <Route exact path='/' component={LoginScreen} />
         <Route exact path='/register' component={RegisterScreen} />
-        <div>
+        <Route>
           <Row>
             {/* Side Bar */}
             <Col xs={3} sm={3} md={2} lg={2} className='pr-0'>
@@ -59,6 +60,7 @@ function App() {
                 <PrivateRoute exact path='/projects/:id/edit' component={ProjectDetailScreen} />
                 <PrivateRoute exact path='/tickets' component={TicketScreen} />
                 <PrivateRoute exact path='/tickets/:id/edit' component={TicketDetailScreen} />
+                <PrivateRoute exact path='/tickets/:id/assign' component={TicketAssignScreen} />
                 <PrivateRoute exact path='/tickets/new' component={CreateTicketScreen} />
                 <PrivateRoute exact path='/users' component={UsersScreen} />
                 <PrivateRoute exact path='/users/:id/edit' component={UserDetailScreen} />
@@ -68,7 +70,7 @@ function App() {
               <Footer />
             </Col>
           </Row>
-        </div>
+        </Route>
       </Switch>
     </Router >
   )

@@ -19,7 +19,7 @@ const SearchBox = ({ history }) => {
         type='text'
         name='q'
         onChange={(e) => setKeyword(e.target.value)}
-        placeholder='Search Products...'
+        placeholder='Search Tickets...'
         className='mr-sm-2 ml-sm-5 bg-white border border-secondary'
 
       ></Form.Control>
@@ -30,4 +30,4 @@ const SearchBox = ({ history }) => {
   )
 }
 
-export default SearchBox  
+export default SearchBox

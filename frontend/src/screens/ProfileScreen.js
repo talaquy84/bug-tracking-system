@@ -29,10 +29,10 @@ const ProfileScreen = ({ history }) => {
   const { loading: loadingTicket, tickets, error } = getMyTickets
 
   useEffect(() => {
+    dispatch(listMyTickets())
     if (!user || !user.name || success) {
       dispatch({ type: USER_UPDATE_RESET })
       dispatch(loadUser())
-      dispatch(listMyTickets())
     } else {
       setName(user.name)
       setEmail(user.email)

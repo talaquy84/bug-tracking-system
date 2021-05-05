@@ -42,6 +42,7 @@ const TicketScreen = ({ history }) => {
             <LinkContainer to='/tickets/new'>
               <Button className='ml-auto mr-5' >Create New Ticket</Button>
             </LinkContainer>
+
             {loading ? (<Loader />) : error ? (<Message variant='danger'> {error} </Message>) : (
               <Table striped bordered hover responsive className='table-sm'>
                 <thead>
@@ -51,9 +52,10 @@ const TicketScreen = ({ history }) => {
                     <th>DESCRIPTION</th>
                     <th>PRIORITY</th>
                     <th>STATUS</th>
-                    <th>ASSINGED</th>
+                    <th>ASSIGNED</th>
                     <th>PROJECT</th>
                     <th>DATE</th>
+                    <th>Assign</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -79,6 +81,13 @@ const TicketScreen = ({ history }) => {
                       </td>
                       <td>{ticket.project.name}</td>
                       <td>{ticket.createdAt.substring(0, 10)}</td>
+                      <td>
+                        <LinkContainer to={`/tickets/${ ticket._id }/assign`}>
+                          <Button variant='light' className='btn-sm'>
+                            <i className='fas fa-thumbtack'></i>
+                          </Button>
+                        </LinkContainer>
+                      </td>
                       <td>
                         <LinkContainer to={`/tickets/${ ticket._id }/edit`}>
                           <Button variant='light' className='btn-sm'>

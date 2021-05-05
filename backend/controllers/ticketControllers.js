@@ -193,12 +193,101 @@ const updateTicket = asyncHandler(async (req, res) => {
   }
 })
 
+//@desc     Assign new user to current ticket
+//@route    PUT /api/tickets/:id/assign
+//@access   Private
+const assignTicket = asyncHandler(async (req, res) => {
+  const { name, email, role, userId } = req.body
+  const ticketId = req.params.id
+  let ticketExist = false
+
+  const ticket = await Ticket.findById(ticketId)
+
+  if (ticket) {
+    ticket.assignedTo.map(async user => {
+      if (user.userId == userId) {
+        ticketExist = true
+      }
+    })
+    console.log(ticketExist)
+    if (!ticketExist) {
+      ticket.assignedTo.push({
+        name: name,
+        email: email,
+        role: role,
+        userId: userId
+      })
+    }
+  } else {
+    res.status(400)
+    throw new Error('Ticket not exists')
+  }
+  const updatedTicket = await ticket.save()
+
+  if (updatedTicket) {
+    res.status(201).json({
+      updatedTicket
+    })
+  } else {
+    res.status(400)
+    throw new Error('Cannot Assign New User')
+  }
+})
+
+//@desc     Assign new user to current ticket
+//@route    PUT /api/tickets/:id/remove
+//@access   Private
+const removeUserTicket = asyncHandler(async (req, res) => {
+  const { name, email, role, userId } = req.body
+  const ticketId = req.params.id
+  let userExist = false
+
+  const ticket = await Ticket.findById(ticketId)
+
+  if (ticket) {
+    ticket.assignedTo.map(async user => {
+      if (user.userId == userId) {
+        userExist = true
+      }
+    })
+    if (userExist) {
+      //Remove
+      await Ticket.updateMany(
+        { _id: ticketId },
+        { $pull: { assignedTo: { userId: userId } } },
+        { safe: true, multi: true }
+      )
+    } else {
+      res.status(400)
+      throw new Error('User not exists')
+    }
+  } else {
+    res.status(400)
+    throw new Error('Ticket not exists')
+  }
+  const updatedTicket = await ticket.save()
+
+  if (updatedTicket) {
+    res.status(201).json({
+      _id: updatedTicket._id,
+      name: updatedTicket.name,
+      email: updatedTicket.email,
+      role: updatedTicket.role,
+    })
+  } else {
+    res.status(400)
+    throw new Error('Cannot Assign New User')
+  }
+})
+
 export {
   getAllTicket,
   getMyTickets,
   createTicket,
   deleteTicket,
   getTicketById,
-  updateTicket
+  updateTicket,
+  assignTicket,
+  removeUserTicket
 }
 

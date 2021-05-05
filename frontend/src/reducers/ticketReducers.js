@@ -19,6 +19,13 @@ import {
   TICKET_BYID_REQUEST,
   TICKET_BYID_SUCCESS,
   TICKET_BYID_FAIL,
+  TICKET_ASSIGN_USER_REQUEST,
+  TICKET_ASSIGN_USER_SUCCESS,
+  TICKET_ASSIGN_USER_FAIL,
+  TICKET_ASSIGN_USER_RESET,
+  TICKET_REMOVE_USER_REQUEST,
+  TICKET_REMOVE_USER_SUCCESS,
+  TICKET_REMOVE_USER_FAIL,
 } from '../constants/ticketConstants'
 
 export const getAllTicket = (state = { tickets: [] }, action) => {
@@ -126,6 +133,52 @@ export const ticketById = (state = { ticket: {} }, action) => {
         ticket: action.payload,
       }
     case TICKET_BYID_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      }
+    default:
+      return state
+  }
+}
+
+export const ticketAssign = (state = {}, action) => {
+  switch (action.type) {
+    case TICKET_ASSIGN_USER_REQUEST:
+      return {
+        loading: true
+      }
+    case TICKET_ASSIGN_USER_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+        ticket: action.payload,
+      }
+    case TICKET_ASSIGN_USER_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      }
+    case TICKET_ASSIGN_USER_RESET:
+      return {}
+    default:
+      return state
+  }
+}
+
+export const ticketRemoveUser = (state = {}, action) => {
+  switch (action.type) {
+    case TICKET_REMOVE_USER_REQUEST:
+      return {
+        loading: true
+      }
+    case TICKET_REMOVE_USER_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+        ticket: action.payload,
+      }
+    case TICKET_REMOVE_USER_FAIL:
       return {
         loading: false,
         error: action.payload,

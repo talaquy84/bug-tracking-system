@@ -18,6 +18,12 @@ import {
   TICKET_BYID_REQUEST,
   TICKET_BYID_SUCCESS,
   TICKET_BYID_FAIL,
+  TICKET_ASSIGN_USER_REQUEST,
+  TICKET_ASSIGN_USER_SUCCESS,
+  TICKET_ASSIGN_USER_FAIL,
+  TICKET_REMOVE_USER_REQUEST,
+  TICKET_REMOVE_USER_SUCCESS,
+  TICKET_REMOVE_USER_FAIL,
 } from '../constants/ticketConstants'
 import setAuthToken from '../utils/setAuthToken'
 
@@ -200,6 +206,78 @@ export const listTicketByID = (ticketId) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: TICKET_BYID_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+    })
+  }
+}
+
+//assign user to current ticket
+export const assignUserTicket = (ticketId, name, email, role, userId) => async (dispatch) => {
+  try {
+    dispatch({
+      type: TICKET_ASSIGN_USER_REQUEST
+    })
+    if (localStorage.token) {
+      setAuthToken(localStorage.token)
+    }
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    const { data } = await axios.put(`/api/tickets/${ ticketId }/assign`,
+      {
+        name, email, role, userId
+      },
+      config
+    )
+    dispatch({
+      type: TICKET_ASSIGN_USER_SUCCESS,
+      payload: data
+    })
+  } catch (error) {
+    dispatch({
+      type: TICKET_ASSIGN_USER_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+    })
+  }
+}
+
+//Remove user to current ticket
+export const removeUserTicket = (ticketId, userId) => async (dispatch) => {
+  try {
+    dispatch({
+      type: TICKET_REMOVE_USER_REQUEST
+    })
+    if (localStorage.token) {
+      setAuthToken(localStorage.token)
+    }
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    const { data } = await axios.put(`/api/tickets/${ ticketId }/remove`,
+      {
+        userId
+      },
+      config
+    )
+    dispatch({
+      type: TICKET_REMOVE_USER_SUCCESS,
+      payload: data
+    })
+  } catch (error) {
+    dispatch({
+      type: TICKET_REMOVE_USER_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
