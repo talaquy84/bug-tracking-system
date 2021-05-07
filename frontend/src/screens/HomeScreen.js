@@ -105,14 +105,13 @@ const HomeScreen = () => {
   }
 
   useEffect(() => {
-    console.log(tickets)
-    // if (!tickets || !users || !projects) {
-    //   dispatch(listAllProject())
-    //   dispatch(listAllTicket())
-    //   dispatch(listAllUser())
-    // }
+    if (!tickets || !users || !projects) {
+      dispatch(listAllProject())
+      dispatch(listAllTicket())
+      dispatch(listAllUser())
+    }
     chart()
-  }, [dispatch])
+  }, [])
 
   return (
     <main>
@@ -185,7 +184,6 @@ const HomeScreen = () => {
           </Row>
         </Container>
       )}
-
     </main>
   )
 }

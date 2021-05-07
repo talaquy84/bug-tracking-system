@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Sidebar from './components/Sidebar'
@@ -31,6 +32,7 @@ if (localStorage.token) {
 }
 
 function App() {
+  const dispatch = useDispatch()
   useEffect(() => {
     store.dispatch(loadUser())
     store.dispatch(listAllProject())

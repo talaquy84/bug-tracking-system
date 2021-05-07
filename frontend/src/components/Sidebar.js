@@ -5,15 +5,10 @@ import { loadUser } from '../actions/userActions'
 import Loader from '../components/Loader'
 import './Sidebar.css'
 
-const Sidebar = (props) => {
-  const dispatch = useDispatch()
+const Sidebar = () => {
 
   const auth = useSelector(state => state.auth)
-  const { loading, user } = auth
-
-  useEffect(() => {
-    dispatch(loadUser())
-  }, [dispatch])
+  const { loading: loadingUser, user } = auth
 
   return (
     <div style={{ background: '#027581', height: '100%', color: "white" }} className='border border-secondary border-5'>
@@ -25,7 +20,6 @@ const Sidebar = (props) => {
           </h3>
         </Link>
       </div>
-
       <div className='sidebar-menu'>
         <ul>
           <li>
@@ -60,12 +54,12 @@ const Sidebar = (props) => {
           </li>
 
           <li>
-            {/* {user.isAdmin && ( */}
-            <Link className='menu-link' to='/admin/users'>
-              <span className='fas fa-users-cog'></span>
-              <span> Manage Users</span>
-            </Link>
-            {/* )} */}
+            {loadingUser ? (<Loader />) : user.isAdmin ? (
+              <Link className='menu-link' to='/admin/users'>
+                <span className='fas fa-users-cog'></span>
+                <span> Manage Users</span>
+              </Link>
+            ) : (<> </>)}
           </li>
         </ul>
       </div>

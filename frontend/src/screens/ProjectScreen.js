@@ -63,8 +63,8 @@ const ProjectScreen = () => {
                       <td>
                         <ul>
                           {project.ticket.map(ticket => (
-                            <LinkContainer to={`/tickets/${ ticket.ticketId }`} >
-                              <li key={ticket._id}>{ticket.ticketName}</li>
+                            <LinkContainer to={`/tickets/${ ticket.ticketId }/edit`} >
+                              <li key={ticket.ticketId}>{ticket.ticketName}</li>
                             </LinkContainer>
                           ))}
                         </ul>

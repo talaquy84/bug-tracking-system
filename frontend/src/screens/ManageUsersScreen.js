@@ -16,8 +16,6 @@ const ManageUsersScreen = () => {
   const { success } = userDelete
 
   useEffect(() => {
-    dispatch(listAllUser())
-
     if (success) {
       dispatch(listAllUser())
     }
@@ -32,6 +30,7 @@ const ManageUsersScreen = () => {
   return (
     <main>
       <Container className='py-3 px-0 ml-auto'>
+        { }
         <Row>
           <Col>
             <h2>MANAGE USERS </h2>
@@ -46,7 +45,6 @@ const ManageUsersScreen = () => {
                     <th>TICKETS</th>
                     <th>ADMIN</th>
                     <th></th>
-
                   </tr>
                 </thead>
                 <tbody>
